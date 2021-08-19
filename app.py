@@ -1,0 +1,34 @@
+from flask import Flask 
+from flask_sqlalchemy import SQLAlchemy
+
+import os
+
+app = Flask(__name__)
+
+# change to name of your database; add path if necessary
+
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgres://nsopytsl:HZFfcpFHtBDvkirAra32rufO9V0NuSgB@kashin.db.elephantsql.com/nsopytsl"
+
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+app.secret_key = '936TXS'
+
+# this variable, db, will be used for all SQLAlchemy commands
+db = SQLAlchemy(app)
+
+# NOTHING BELOW THIS LINE NEEDS TO CHANGE
+# this route will test the database connection and nothing more
+@app.route('/')
+def testdb():
+    try:
+        db.session.query(text('1')).from_statement(text('SELECT 1')).all()
+        return '<h1>It works.</h1>'
+    except Exception as e:
+        # e holds description of the error
+        error_text = "<p>The error:<br>" + str(e) + "</p>"
+        hed = '<h1>Something is broken.</h1>'
+        return hed + error_text
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
+
